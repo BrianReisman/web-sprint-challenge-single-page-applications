@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
-
+import {useHistory} from 'react-router-dom';
 
 
 
 export default function Form(props) {
+  const {push} = useHistory();
+
   const blankObj = {
     name: "",
     size: "",
@@ -17,11 +19,12 @@ export default function Form(props) {
   };
   const [input, setInput] = useState(blankObj);
   console.log(input);
-  const [err, setErr] = useState(blankObj);
+  const [err, setErr] = useState(false);
   const [storeOrders, setStoreOrders] = useState([]);
 console.log(storeOrders);
 
   const formSchema = yup.object().shape({
+    name: yup.string().min(2)
     // name:
     // size:
     // pineapple:
@@ -29,14 +32,15 @@ console.log(storeOrders);
     // onions:
     // chives:
     // instructions:
-    name: yup.string().min(2)
   });
 
   function validate(e){
     // console.log(e.target.value.length)
 if(e.target.value.length < 3){
   console.log('too short!')
-  setErr({...err, name: 'too short!' })
+  setErr(true);
+} else {
+  setErr(false);
 }
     // const type = e.target.type === "checkbox" ? e.target.checked : e.target.name;
     // console.log(type)
@@ -52,15 +56,13 @@ if(e.target.value.length < 3){
     //   } )
   }
 
-
-
   const onSubmit = function (e) {
     e.preventDefault();
 
     axios
       .post('https://reqres.in/api/users', input)
       .then(res => {
-        setStoreOrders(...storeOrders.push(res.data));
+        setStoreOrders([...storeOrders, res.data]);
         // console.log('yes!', res)
       })
       .catch(err => {console.log('trouble!', err)})
@@ -78,13 +80,16 @@ if(e.target.value.length < 3){
   return (
     <div>
       <h6>hi from Form</h6>
+      <button id="homeBtn" onClick={()=>{push(`/`)}}>Want to go back to the empty home page?</button>
+        <br />
+        <br />
 
       <form onSubmit={onSubmit}>
         <label htmlFor="name">
           Name:
           <input type="text" id="name" name="name" onChange={onChange} />
         </label>
-
+        {err ? <div>You dont messed up!</div> : null }
         <br />
 
         <label htmlFor="size">
@@ -145,6 +150,7 @@ if(e.target.value.length < 3){
           special instructions
           <textarea
             type="text"
+            id="instructions"
             name="instructions"
             onChange={onChange}
           ></textarea>

@@ -8,7 +8,7 @@ const App = () => {
   return (
     <>
       <h1>Get your pizza here</h1>
-      <p>Click below or order,,,always see me</p>
+      <p>Welcome to a site built in under three hours, testing and project set up included.</p>
 
       <Route exact path='/'>
         <Home/>
@@ -18,6 +18,9 @@ const App = () => {
         <Form/>
       </Route>
 
+    <footer>
+      <p>Please don't call us if you're order is not to your liking. That's your business and we respect your privacy.</p>
+    </footer>
     </>
   );
 };

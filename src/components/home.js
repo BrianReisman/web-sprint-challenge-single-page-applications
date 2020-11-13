@@ -8,7 +8,7 @@ export default function Home(props) {
   return(
     <div>
 
-      <button onClick={()=>{push(`/pizza`)}}>Order Pizza</button>
+      <button id="homeBtn" onClick={()=>{push(`/pizza`)}}>Order Pizza</button>
 
     </div>
   )
