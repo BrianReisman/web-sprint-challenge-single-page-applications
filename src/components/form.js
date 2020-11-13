@@ -21,18 +21,8 @@ export default function Form(props) {
   console.log(input);
   const [err, setErr] = useState(false);
   const [storeOrders, setStoreOrders] = useState([]);
-console.log(storeOrders);
+// console.log(storeOrders);
 
-  const formSchema = yup.object().shape({
-    name: yup.string().min(2)
-    // name:
-    // size:
-    // pineapple:
-    // peppers:
-    // onions:
-    // chives:
-    // instructions:
-  });
 
   function validate(e){
     // console.log(e.target.value.length)
@@ -63,9 +53,11 @@ if(e.target.value.length < 3){
       .post('https://reqres.in/api/users', input)
       .then(res => {
         setStoreOrders([...storeOrders, res.data]);
+      setInput(blankObj);
         // console.log('yes!', res)
       })
       .catch(err => {console.log('trouble!', err)})
+
 
   };
 
@@ -87,7 +79,7 @@ if(e.target.value.length < 3){
       <form onSubmit={onSubmit}>
         <label htmlFor="name">
           Name:
-          <input type="text" id="name" name="name" onChange={onChange} />
+          <input type="text" id="name" name="name" onChange={onChange} value={input.name}/>
         </label>
         {err ? <div>You dont messed up!</div> : null }
         <br />
@@ -95,7 +87,7 @@ if(e.target.value.length < 3){
         <label htmlFor="size">
           {" "}
           What size zzah would you like?
-          <select name="size" id="size" onChange={onChange}>
+          <select name="size" id="size" onChange={onChange} value={input.size}>
             <option value="1">---Please Select Your Size---</option>
             <option value="10">10 inch</option>
             <option value="12">12 inch</option>
@@ -111,6 +103,7 @@ if(e.target.value.length < 3){
             name="pineapple"
             id="pineapple"
             onChange={onChange}
+            checked={input.pineapple}
           />
           pineapple
         </label>
@@ -121,6 +114,7 @@ if(e.target.value.length < 3){
             name="peppers"
             id="peppers"
             onChange={onChange}
+            checked={input.peppers}
           />
           peppers
         </label>
@@ -131,6 +125,7 @@ if(e.target.value.length < 3){
             name="onions"
             id="onions"
             onChange={onChange}
+            checked={input.onions}
           />
           onions
         </label>
@@ -141,6 +136,7 @@ if(e.target.value.length < 3){
             name="chives"
             id="chives"
             onChange={onChange}
+            checked={input.chives}
           />
           chives
         </label>
@@ -153,6 +149,7 @@ if(e.target.value.length < 3){
             id="instructions"
             name="instructions"
             onChange={onChange}
+            value={input.instructions}
           ></textarea>
         </label>
 
