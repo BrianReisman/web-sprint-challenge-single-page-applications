@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as yup from "yup";
 import axios from "axios";
 
@@ -13,19 +13,50 @@ const Order = (props) => {
     instructions: "",
   };
   const [form, setForm] = useState(blankFormObj);
-  console.log(form);
+  const [errState, setErrState] = useState({ name: "" });
+  const [btnAble, setBtnAble] = useState(true);
+  // console.log(errState);
+  // console.log(form);
 
-  //validation
-  // const schema = yup.object().shape({
-  //   name: yup.string().required().min(2),
-  // });
+  //allow btn to submit if form schema is valid.
+  useEffect(()=>{ //useEffect because I want to control then this runs. When will it? When form updates.
+    schema.isValid(form).then((valid) => { //check is schema is valid for form and then if successful
+      console.log(valid)
+      setBtnAble(!valid); //set BtnAble state to the opposite of what it is (it starts as false)
+    }, [form]) //this is what must change in order to trigger the logic in useEffect to run.
+  })
+
+  // validation
+  const schema = yup.object().shape({
+    name: yup
+      .string()
+      .required("You must provide a name")
+      .min(2, "Too short! Keep going!"),
+  });
+
+  const validateNameInput = (e) => {
+    yup
+      //1) WHERE you're reaching into. 2) WHAT you're reaching in to check against
+      .reach(schema, e.target.name)
+      //3) the VALUE use are using to check against WHAT 2) you've pulled out from WHERE 1)
+      .validate(e.target.value)
+      //4) if things match up, do this
+      .then((valid) => {
+        setErrState({ name: "" });
+        console.log(valid);
+      })
+      .catch((err) => {
+        setErrState({ ...errState, name: err.errors[0] });
+        console.log(err.errors[0]);
+      });
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
     // submitting order to database
     axios
       .post("https://reqres.in/api/users", form)
-      .then(res => {
+      .then((res) => {
         console.log(res.data);
         setForm(blankFormObj);
       })
@@ -35,9 +66,13 @@ const Order = (props) => {
       });
   };
 
-  const onChangeHandler = ({ target }) => {
-    const type = target.type === "checkbox" ? "checked" : "value";
-    setForm({ ...form, [target.name]: target[type] });
+  const onChangeHandler = (e) => {
+    const type = e.target.type === "checkbox" ? "checked" : "value";
+    setForm({ ...form, [e.target.name]: e.target[type] });
+
+    if (e.target.name === "name") {
+      validateNameInput(e);
+    }
   };
 
   return (
@@ -55,6 +90,7 @@ const Order = (props) => {
             value={form.name}
             onChange={onChangeHandler}
           />
+          {errState.name ? <div>{errState.name}</div> : null}
         </label>
         <br />
         <label htmlFor="size">
@@ -130,7 +166,7 @@ const Order = (props) => {
           />
         </label>
         <br />
-        <button id="submit-btn">ORDER NOW</button>
+        <button disabled={btnAble} id="submit-btn">ORDER NOW</button>
       </form>
     </div>
   );
