@@ -50,6 +50,7 @@ const Order = (props) => {
           <input
             type="text"
             name="name"
+            className="name"
             id="name"
             value={form.name}
             onChange={onChangeHandler}
@@ -129,7 +130,7 @@ const Order = (props) => {
           />
         </label>
         <br />
-        <button>ORDER NOW</button>
+        <button id="submit-btn">ORDER NOW</button>
       </form>
     </div>
   );
